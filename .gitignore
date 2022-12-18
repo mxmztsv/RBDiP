@@ -1,1 +1,4 @@
 /.idea/
+/project/frontend/.idea
+/project/frontend/node_modules
+/project/frontend/build
