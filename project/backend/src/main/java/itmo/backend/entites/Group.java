@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table
+@Table(name = "rbdip_group")
 public class Group {
     @Id
     @Column

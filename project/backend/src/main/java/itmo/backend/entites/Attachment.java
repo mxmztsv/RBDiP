@@ -5,17 +5,17 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table
+@Table(name = "rbdip_attachment")
 public class Attachment {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String link;
 
     @ManyToOne
