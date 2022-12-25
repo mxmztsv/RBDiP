@@ -8,5 +8,6 @@ public class PostDTO {
     private String title;
     private String body;
     private String groupName;
+    private Long createdAt;
     private AttachmentDTO attachment;
 }
