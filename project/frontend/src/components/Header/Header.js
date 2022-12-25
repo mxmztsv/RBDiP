@@ -14,11 +14,12 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import {Link, NavLink} from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import {useAuthContext} from "../../context/AuthContext";
 
 const pages = [
 	{
 		title: "Новости",
-		link: "/news"
+		link: "/"
 	},
 	{
 		title: "Ссылки",
@@ -47,6 +48,7 @@ export const Header = () => {
 	};
 
 	const navigate = useNavigate()
+	const {logout, userData} = useAuthContext()
 
 	return (
 		<AppBar position="static">
@@ -142,9 +144,9 @@ export const Header = () => {
 					</Box>
 
 					<Box sx={{ flexGrow: 0 }}>
-						<Tooltip title="Профиль">
+						<Tooltip title={userData.name + " " + userData.surname}>
 							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+								<Avatar alt={userData.name + " " + userData.surname} src="/static/images/avatar/2.jpg" />
 							</IconButton>
 						</Tooltip>
 						<Menu
@@ -163,11 +165,12 @@ export const Header = () => {
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
 						>
-							{settings.map((setting) => (
-								<MenuItem key={setting} onClick={handleCloseUserMenu}>
-									<Typography textAlign="center">{setting}</Typography>
-								</MenuItem>
-							))}
+							{/*<MenuItem onClick={handleCloseUserMenu}>*/}
+							{/*	<Typography textAlign="center">Профиль</Typography>*/}
+							{/*</MenuItem>*/}
+							<MenuItem onClick={() => {logout()}}>
+								<Typography textAlign="center">Выход</Typography>
+							</MenuItem>
 						</Menu>
 					</Box>
 				</Toolbar>

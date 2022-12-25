@@ -1,8 +1,9 @@
 package itmo.backend.entites;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -19,17 +20,17 @@ public class User {
     @Column(nullable = false)
     private String surname;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "group_name", referencedColumnName = "name", nullable = false)
+    @JoinColumn(name = "group_name", referencedColumnName = "name")
     private Group group;
 
-    @Column(name = "is_admin", nullable = false)
+    @Column(nullable = false)
     @ColumnDefault("false")
     private boolean isAdmin;
 }
