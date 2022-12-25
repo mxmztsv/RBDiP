@@ -1,6 +1,6 @@
 package itmo.backend.entites;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 
 @Entity

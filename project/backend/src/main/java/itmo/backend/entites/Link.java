@@ -1,6 +1,6 @@
 package itmo.backend.entites;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -22,3 +22,4 @@ public class Link {
     @JoinColumn(name = "group_name", referencedColumnName = "name", nullable = false)
     private Group group;
 }
+
