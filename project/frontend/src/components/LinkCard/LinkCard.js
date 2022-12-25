@@ -4,10 +4,16 @@ import {MoreVert} from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import {useState} from "react";
 import MenuItem from "@mui/material/MenuItem";
+import toast from "react-hot-toast";
+import {useHttp} from "../../hooks/http.hook";
+import {useAuthContext} from "../../context/AuthContext";
 
-export const LinkCard = ({id, title, link, editHandler}) => {
+export const LinkCard = ({id, title, link, editHandler, updateLinks = () => {}}) => {
 
 	const [anchorElMenu, setAnchorElMenu] = useState(null);
+
+	const {request} = useHttp()
+	const {userData} = useAuthContext()
 
 	const openMenu = (event) => {
 		setAnchorElMenu(event.currentTarget)
@@ -17,11 +23,20 @@ export const LinkCard = ({id, title, link, editHandler}) => {
 		setAnchorElMenu(null)
 	}
 
+	const deleteHandler = () => {
+		request(`/links/${id}`, 'DELETE', null, true).then(() => {
+			toast.success('Ссылка удалена')
+			closeMenu()
+			updateLinks()
+		})
+	}
+
 
 	return (
 			<Card sx={{marginBottom: 3}}>
 				<CardHeader
 					action={
+					userData.isAdmin &&
 						<>
 							<IconButton onClick={openMenu}>
 								<MoreVert/>
@@ -45,7 +60,7 @@ export const LinkCard = ({id, title, link, editHandler}) => {
 								<MenuItem onClick={() => {editHandler(id)}}>
 									<Typography textAlign="center">Редактировать</Typography>
 								</MenuItem>
-								<MenuItem onClick={closeMenu}>
+								<MenuItem onClick={deleteHandler}>
 									<Typography textAlign="center">Удалить</Typography>
 								</MenuItem>
 							</Menu>
@@ -54,14 +69,6 @@ export const LinkCard = ({id, title, link, editHandler}) => {
 					title={title}
 					subheader={<a href={link}>{link}</a>}
 				/>
-				{/*<CardContent>*/}
-				{/*	<Typography variant="h5">*/}
-				{/*		{title}*/}
-				{/*	</Typography>*/}
-				{/*	<Typography variant="body1" href={link}>*/}
-				{/*		{link}*/}
-				{/*	</Typography>*/}
-				{/*</CardContent>*/}
 			</Card>
 	)
 }

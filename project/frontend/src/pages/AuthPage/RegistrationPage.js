@@ -13,24 +13,32 @@ import {
 } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {Controller, useForm} from "react-hook-form";
-import {useHttp} from "../../hooks/http.hook";
 import {useAuthContext} from "../../context/AuthContext";
+import {useHttp} from "../../hooks/http.hook";
 import toast from "react-hot-toast";
 
-export const AuthPage = () => {
+export const RegistrationPage = () => {
 
 	const navigate = useNavigate()
 	const {request} = useHttp()
 	const {login} = useAuthContext()
 
-	const { handleSubmit, control, reset } = useForm()
+	const { handleSubmit, control, reset } = useForm({
+		defaultValues: {
+			isAdmin: false,
+		}
+	})
 
 	const onSubmit = async data => {
 		// console.log(data)
-		request('/account/sign-in', 'POST', data).then((userData) => {
-			login(userData)
-			toast.success('Вход в аккаунт выполнен')
-		})
+		try {
+			request('/account/sign-up', 'POST', data).then((userData) => {
+				toast.success("Выполнена регистрация")
+				login(userData)
+			})
+		} catch (e) {
+			toast.error(e.message)
+		}
 	}
 
 	return (
@@ -40,12 +48,38 @@ export const AuthPage = () => {
 					<Card sx={{ minWidth: 500 }}>
 						<CardContent>
 							<Typography variant="h4">
-								Авторизация
+								Регистрация
 							</Typography>
 							<Box component="form" display="flex" flexDirection="column" onSubmit={handleSubmit(onSubmit)}>
 								<Box margin="8px 0">
 									<Controller
-										name={"login"}
+										name={"name"}
+										required
+										fullWidth
+										control={control}
+										render={({field: {onChange, value}}) => (
+											<TextField onChange={onChange} value={value} label={"Имя"}
+											           required
+											           fullWidth/>
+										)}
+									/>
+								</Box>
+								<Box margin="8px 0">
+									<Controller
+										name={"surname"}
+										required
+										fullWidth
+										control={control}
+										render={({field: {onChange, value}}) => (
+											<TextField onChange={onChange} value={value} label={"Фамилия"}
+											           required
+											           fullWidth/>
+										)}
+									/>
+								</Box>
+								<Box margin="8px 0">
+									<Controller
+										name={"email"}
 										required
 										fullWidth
 										control={control}
@@ -71,16 +105,29 @@ export const AuthPage = () => {
 										)}
 									/>
 								</Box>
+								<Box margin="8px 0">
+									<Controller
+										name={"isAdmin"}
+										required
+										fullWidth
+										control={control}
+										render={({field}) => (
+											<FormControlLabel control={<Checkbox {...field} />} label="Староста группы" />
+
+										)}
+									/>
+								</Box>
 								<CardActions>
 									<Button type="submit">
-										Войти
+										Зарегистрироваться
 									</Button>
-									<Button onClick={() => {navigate('/sign-up')}}>
-										Регистрация
+									<Button onClick={() => {navigate('/')}}>
+										Вход
 									</Button>
 								</CardActions>
 							</Box>
 						</CardContent>
+
 					</Card>
 				</Box>
 			</Container>

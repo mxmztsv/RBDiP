@@ -7,17 +7,51 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import {useForm, Controller} from "react-hook-form";
 import {Box} from "@mui/material";
+import toast from "react-hot-toast";
+import {useHttp} from "../../hooks/http.hook";
+import {useEffect} from "react";
 
-export const EditLinkModal = ({isOpen, close, id = null}) => {
+export const EditLinkModal = ({isOpen, close, id = null, updateLinks = () => {}}) => {
 
-	const { handleSubmit, control, reset } = useForm({
+	const {request} = useHttp()
+
+	const { handleSubmit, control, reset, setValue } = useForm({
 		defaultValues: {
 			title: "",
 			link: ""
 		}
 	})
 
-	const onSubmit = data => console.log(data)
+	const fetchLink = async () => {
+		request(`/links/${id}`, 'GET', null, true).then((response) => {
+			setValue("title", response.title)
+			setValue("link", response.link)
+		})
+	}
+
+	const onSubmit = data => {
+		// console.log(data)
+		if (id) {
+			request(`/links/${id}`, 'PATCH', data, true).then(() => {
+				toast.success('Ссылка обновлена')
+				updateLinks()
+			})
+		} else {
+			request('/links', 'POST', data, true).then(() => {
+				toast.success('Новая ссылка добавлена')
+				updateLinks()
+				reset()
+				close()
+			})
+		}
+	}
+
+	useEffect(() => {
+		if (id) {
+			fetchLink()
+		}
+	}, [id])
+
 
 	return (
 		<Dialog open={isOpen} onClose={() => {
@@ -26,10 +60,6 @@ export const EditLinkModal = ({isOpen, close, id = null}) => {
 		}} fullWidth>
 			<DialogTitle>Редактор ссылки</DialogTitle>
 			<DialogContent>
-				{/*<DialogContentText>*/}
-				{/*	To subscribe to this website, please enter your email address here. We*/}
-				{/*	will send updates occasionally.*/}
-				{/*</DialogContentText>*/}
 				<Box component="form" onSubmit={handleSubmit(onSubmit)}>
 					<Box margin="20px 0 20px 0">
 						<Controller
